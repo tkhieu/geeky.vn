@@ -22,6 +22,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import tgm.geeky.vn.util.MyBase64;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -30,7 +34,10 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -78,8 +85,7 @@ public class MainActivity extends Activity {
 									fbid = user.getId();
 									button.setOnClickListener(clickListener_SendRequest);
 								} else {
-									TextView welcome = (TextView) findViewById(R.id.textViewFbName);
-									welcome.setText("Không nhận được Facebook ");
+									Toast.makeText(getApplicationContext(), "Have an authentication error !!!", Toast.LENGTH_LONG).show();
 								}
 							}
 						});
@@ -218,4 +224,63 @@ public class MainActivity extends Activity {
 
 	}
 
+	
+	private void scaleImage()
+	{
+	    // Get the ImageView and its bitmap
+	    ImageView view = (ImageView) findViewById(R.id.imageButton1);
+	    Drawable drawing = view.getDrawable();
+	    if (drawing == null) {
+	        return; // Checking for null & return, as suggested in comments
+	    }
+	    Bitmap bitmap = ((BitmapDrawable)drawing).getBitmap();
+
+	    // Get current dimensions AND the desired bounding box
+	    int width = bitmap.getWidth();
+	    int height = bitmap.getHeight();
+	    int bounding = dpToPx(250);
+	    Log.i("Test", "original width = " + Integer.toString(width));
+	    Log.i("Test", "original height = " + Integer.toString(height));
+	    Log.i("Test", "bounding = " + Integer.toString(bounding));
+
+	    // Determine how much to scale: the dimension requiring less scaling is
+	    // closer to the its side. This way the image always stays inside your
+	    // bounding box AND either x/y axis touches it.  
+	    float xScale = ((float) bounding) / width;
+	    float yScale = ((float) bounding) / height;
+	    float scale = (xScale <= yScale) ? xScale : yScale;
+	    Log.i("Test", "xScale = " + Float.toString(xScale));
+	    Log.i("Test", "yScale = " + Float.toString(yScale));
+	    Log.i("Test", "scale = " + Float.toString(scale));
+
+	    // Create a matrix for the scaling and add the scaling data
+	    Matrix matrix = new Matrix();
+	    matrix.postScale(scale, scale);
+
+	    // Create a new bitmap and convert it to a format understood by the ImageView 
+	    Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+	    width = scaledBitmap.getWidth(); // re-use
+	    height = scaledBitmap.getHeight(); // re-use
+	    BitmapDrawable result = new BitmapDrawable(scaledBitmap);
+	    Log.i("Test", "scaled width = " + Integer.toString(width));
+	    Log.i("Test", "scaled height = " + Integer.toString(height));
+
+	    // Apply the scaled bitmap
+	    view.setImageDrawable(result);
+
+	    // Now change ImageView's dimensions to match the scaled image
+	    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams(); 
+	    params.width = width;
+	    params.height = height;
+	    view.setLayoutParams(params);
+
+	    Log.i("Test", "done");
+	}
+
+	private int dpToPx(int dp)
+	{
+	    float density = getApplicationContext().getResources().getDisplayMetrics().density;
+	    return Math.round((float)dp * density);
+	}
+	
 }
