@@ -13,33 +13,38 @@
     <ImageButton
         android:id="@+id/imageButtonWolf"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.61"
+        android:layout_height="555dp"
+        android:layout_weight="0.5"
         android:background="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg" />
+        android:scaleType="fitXY"
+        android:src="@drawable/toggle_wolf" />
 
     <TextView
         android:id="@+id/textViewFbName"
+        style="@style/CodeFont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Small Text"
+        android:gravity="center"
+        android:text="@string/hi_chicken"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <Button
-        android:id="@+id/buttonSendRequest"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/button_send_request" />
-
     <TextView
-        android:id="@+id/textViewTest"
-        android:layout_width="wrap_content"
+        android:id="@+id/textView1"
+        style="@style/small_text"
+        android:layout_width="286dp"
         android:layout_height="wrap_content"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:gravity="center"
+        android:text="@string/note"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_gravity="center_horizontal" />
+
+    <ImageButton
+        android:id="@+id/imageButton2359"
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo_media" />
 
 </LinearLayout>

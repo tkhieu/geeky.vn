@@ -7,5 +7,7 @@
     <string name="app_id">487506834654558</string>
     <string name="button_send_request">Send Request</string>
     <string name="color_white">#fff</string>
+    <string name="hi_chicken">Hi! you are a chicken</string>
+    <string name="note">If this not your account, please restart this app after signing with correct acount in Facebook app.</string>
 
 </resources>

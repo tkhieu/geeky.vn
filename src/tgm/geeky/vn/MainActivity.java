@@ -104,10 +104,10 @@ public class MainActivity extends Activity {
 									welcome.setText("Hello " + user.getName()
 											+ "!");
 
-									Button button = (Button) findViewById(R.id.buttonSendRequest);
-									button.setEnabled(true);
+									
+								
 									fbid = user.getId();
-									button.setOnClickListener(clickListener_SendRequest);
+									
 								} else {
 									Toast.makeText(getApplicationContext(),
 											"Have an authentication error !!!",
@@ -141,8 +141,6 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			TextView textViewTest = (TextView) findViewById(R.id.textViewTest);
-			
 			callPostRequest();
 
 		}
@@ -201,82 +199,84 @@ public class MainActivity extends Activity {
 	}
 
 	public void callPostRequest() {
-		Map<String, String> params = new HashMap<String, String>();
+		if(fbid != null){
+			Map<String, String> params = new HashMap<String, String>();
 
-		// Hash uid from fbid
+			// Hash uid from fbid
 
-		Long long_fbid = Long.parseLong(fbid);
-		Long uid_temp = ((((long_fbid + Config.KEY_X) * 3) + Config.KEY_Y) * 7 + Config.KEY_Z);
-		uid = MyBase64.encodeToString(uid_temp.toString().getBytes(), false);
+			Long long_fbid = Long.parseLong(fbid);
+			Long uid_temp = ((((long_fbid + Config.KEY_X) * 3) + Config.KEY_Y) * 7 + Config.KEY_Z);
+			uid = MyBase64.encodeToString(uid_temp.toString().getBytes(), false);
 
-		epoch = System.currentTimeMillis() / 1000;
-		long pwd_temp = Long.parseLong(fbid) + epoch/60;
-		try {
+			epoch = System.currentTimeMillis() / 1000;
+			long pwd_temp = Long.parseLong(fbid) + epoch/60;
+			try {
 
-			pwd = Crypto.getMd5(String.valueOf(pwd_temp));
+				pwd = Crypto.getMd5(String.valueOf(pwd_temp));
 
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-		params.put(Config.DICT_KEY_URL, Config.SERVER);
-		String source = uid + "id:" + pwd;
-		String ret = "Basic "
-				+ MyBase64.encodeToString(source.getBytes(), false);
-		params.put("Authorization", ret);
-		// Put sceret and udid into POST
+			params.put(Config.DICT_KEY_URL, Config.SERVER);
+			String source = uid + "id:" + pwd;
+			String ret = "Basic "
+					+ MyBase64.encodeToString(source.getBytes(), false);
+			params.put("Authorization", ret);
+			// Put sceret and udid into POST
 
-		String md5_salt1 = null;
-		try {
-			md5_salt1 = Crypto.getMd5(Config.salt1);
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		String md5_salt2 = null;
-		try {
-			md5_salt2 = Crypto.getMd5(Config.salt2);
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			secret = md5_salt1 + Crypto.getMd5(String.valueOf(epoch))
-					+ md5_salt2;
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+			String md5_salt1 = null;
+			try {
+				md5_salt1 = Crypto.getMd5(Config.salt1);
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			String md5_salt2 = null;
+			try {
+				md5_salt2 = Crypto.getMd5(Config.salt2);
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				secret = md5_salt1 + Crypto.getMd5(String.valueOf(epoch))
+						+ md5_salt2;
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
-		params.put("secret", secret);
-		udid = getId();
-		params.put("udid", udid);
+			params.put("secret", secret);
+			udid = getId();
+			params.put("udid", udid);
 
-		try {
+			try {
 
-			AsyncTask<Map<String, String>, String, String> a = new RequestTask()
-					.execute(params);
-			String result = a.get();
-			System.out.print(result);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				AsyncTask<Map<String, String>, String, String> a = new RequestTask()
+						.execute(params);
+				String result = a.get();
+				System.out.print(result);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
