@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="app_id">487506834654558</string>
     <string name="button_send_request">Send Request</string>
+    <string name="color_white">#fff</string>
 
 </resources>

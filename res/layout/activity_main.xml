@@ -11,11 +11,13 @@
     tools:context=".MainActivity" >
 
     <ImageButton
-        android:id="@+id/imageButton1"
+        android:id="@+id/imageButtonWolf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.61"
-        android:src="@drawable/image_bg" />
+        android:background="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg" />
 
     <TextView
         android:id="@+id/textViewFbName"
