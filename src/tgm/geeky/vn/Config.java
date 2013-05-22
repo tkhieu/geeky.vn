@@ -13,5 +13,7 @@ public class Config {
 	public static String DICT_KEY_URL = "URL";
 	public static String DICT_KEY_USERNAME = "USER";
 	public static String DICT_KEY_PASS = "PASS";
+	
+	public static String FLURRY_API_KEY = "54YG3YF7WPSSRHPT6NQ9";
 
 }

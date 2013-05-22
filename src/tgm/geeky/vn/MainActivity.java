@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -45,6 +46,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.flurry.android.FlurryAgent;
 
 public class MainActivity extends Activity {
 
@@ -61,6 +63,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Call Flurry
+		FlurryAgent.onStartSession(this, Config.FLURRY_API_KEY);
+		
+		
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		// scaleImage();
@@ -81,6 +87,18 @@ public class MainActivity extends Activity {
 			}
 		});
 
+		
+		ImageButton imageButton2359 = (ImageButton) findViewById(R.id.imageButton2359);
+		imageButton2359.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://2359media.com"));
+				startActivity(browserIntent);
+			}
+		});
+		
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
 
 			@Override
@@ -104,13 +122,12 @@ public class MainActivity extends Activity {
 									welcome.setText("Hello " + user.getName()
 											+ "!");
 
-									
-								
 									fbid = user.getId();
-									
+
 								} else {
-									Toast.makeText(getApplicationContext(),
-											"Have an authentication error !!!",
+									Toast.makeText(
+											getApplicationContext(),
+											"Have an facebook authentication error !!!",
 											Toast.LENGTH_LONG).show();
 								}
 							}
@@ -199,17 +216,18 @@ public class MainActivity extends Activity {
 	}
 
 	public void callPostRequest() {
-		if(fbid != null){
+		if (fbid != null) {
 			Map<String, String> params = new HashMap<String, String>();
 
 			// Hash uid from fbid
 
 			Long long_fbid = Long.parseLong(fbid);
 			Long uid_temp = ((((long_fbid + Config.KEY_X) * 3) + Config.KEY_Y) * 7 + Config.KEY_Z);
-			uid = MyBase64.encodeToString(uid_temp.toString().getBytes(), false);
+			uid = MyBase64
+					.encodeToString(uid_temp.toString().getBytes(), false);
 
 			epoch = System.currentTimeMillis() / 1000;
-			long pwd_temp = Long.parseLong(fbid) + epoch/60;
+			long pwd_temp = Long.parseLong(fbid) + epoch / 60;
 			try {
 
 				pwd = Crypto.getMd5(String.valueOf(pwd_temp));
@@ -264,20 +282,14 @@ public class MainActivity extends Activity {
 			udid = getId();
 			params.put("udid", udid);
 
-			try {
-
-				AsyncTask<Map<String, String>, String, String> a = new RequestTask()
-						.execute(params);
-				String result = a.get();
-				System.out.print(result);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			new RequestTask().execute(params);
 		}
+	}
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 
 }
