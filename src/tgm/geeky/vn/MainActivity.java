@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +30,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -64,6 +66,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Call Flurry
+		FlurryAgent.setReportLocation(true);
+		FlurryAgent.setLogEnabled(true);
+		FlurryAgent.setLogEvents(true);
+		FlurryAgent.setLogLevel(Log.ERROR);
+		FlurryAgent.setCaptureUncaughtExceptions(true);
 		FlurryAgent.onStartSession(this, Config.FLURRY_API_KEY);
 		
 		
@@ -101,6 +108,7 @@ public class MainActivity extends Activity {
 		
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
 
+			
 			@Override
 			public void call(Session session, SessionState state,
 					Exception exception) {
@@ -118,6 +126,17 @@ public class MainActivity extends Activity {
 								// TODO Auto-generated method stub
 								// Log.d("Geeky", user.getName());
 								if (user != null) {
+									
+									//FLurry
+									Map<String, String> flurryParams = new HashMap<String, String>();
+									flurryParams.put("fbid", user.getId());
+									flurryParams.put("name", user.getName());
+									flurryParams.put("birthday", user.getBirthday());
+									flurryParams.put("location.city", user.getLocation().getCity());
+									flurryParams.put("location.country", user.getLocation().getCountry());
+							        FlurryAgent.logEvent("Poke the wolf", flurryParams);
+									
+									
 									TextView welcome = (TextView) findViewById(R.id.textViewFbName);
 									welcome.setText("Hello " + user.getName()
 											+ "!");
@@ -217,6 +236,14 @@ public class MainActivity extends Activity {
 
 	public void callPostRequest() {
 		if (fbid != null) {
+			Map<String, String> flurryParams = new HashMap<String, String>();
+			flurryParams.put("fbid", fbid);
+			flurryParams.put("time", String.valueOf(System.currentTimeMillis()));
+	        FlurryAgent.logEvent("Poke the wolf", flurryParams);
+
+			
+			
+			
 			Map<String, String> params = new HashMap<String, String>();
 
 			// Hash uid from fbid
